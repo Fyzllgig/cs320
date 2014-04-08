@@ -1,0 +1,40 @@
+CS320 - Software Engineering
+
+Brett Carter
+brett.carter@wsu.edu
+
+David Parrott
+david.m.parrott@wsu.edu
+
+Project:
+Schedule Creator
+
+Description:
+Schedule Creator is a web based piece of software that will store and generate schedules for employers. Allowing employers to start a database of employees and generate schedules based on those employees.
+
+To run:
+www.schedulecreator.net
+username:password combinations
+Manager-class user with pre-made data set:
+username: tester
+password: 1q2w3e
+
+Employee-class users with pre-made data set (username:password) 
+joe:eatatjoes
+mavis:mavis
+tim:tim
+daryl:daryl
+alex:alex
+sue:sue
+bill:bill
+nancy:nancy
+david:davidrules
+brett:brettsucks
+
+Once logged in you can navigate the menuss on the left side of the screen.
+The "Info" tab will display the employee information.
+The "Schedules" tab will display the schedule screen.
+	(for employees allows changing schedules they are assigned to)
+	(for managers allows editing of schedules)
+The "messages" tab, as of right now will display the pseudo-code for our schedule generation algorithm.
+The "Logout" tab will log you and return to the login screen.

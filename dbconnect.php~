@@ -1,0 +1,3 @@
+<?php
+	mysqli_connect("scheduler.db","scheduler","9mFqpczdMAsAKZEL","test") or die(mysqli_error());
+?>

@@ -1,0 +1,268 @@
+<?php
+session_start();
+if(!session_is_registered(myusername)){
+	header("Location: index.html");
+}
+require_once('dbconnect.php');
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Schedules</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Screen that displays the employees and list of schedules the user is on. Displays the current selected schedule, defaults to the most recent">
+  <meta name="author" content="Brett Carter and David Parrott">
+
+	<!--link rel="stylesheet/less" href="less/bootstrap.less" type="text/css" /-->
+	<!--link rel="stylesheet/less" href="less/responsive.less" type="text/css" /-->
+	<!--script src="js/less-1.3.3.min.js"></script-->
+	<!--append ‘#!watch’ to the browser URL, then refresh the page. -->
+	
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+  <![endif]-->
+
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="img/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="img/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="img/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="img/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="img/favicon.png">
+  
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/scripts.js"></script>
+</head>
+
+<body>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<ul class="nav nav-tabs nav-stacked">
+				<li class="active">
+					<a href="#">Schedules</a>
+				</li>
+				<li>
+					<a href="employ.php">Info</a>
+				</li>
+				<li>
+					<a href="pseudocode.html">Messages</a>
+				</li>
+				<li>
+				        <a href="logout.php">Logout</a>
+				</li>
+				<li class="dropdown pull-right">
+					 <a href="#" data-toggle="dropdown" class="dropdown-toggle">Dropdown<strong class="caret"></strong></a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="#">Action</a>
+						</li>
+						<li>
+							<a href="#">Another action</a>
+						</li>
+						<li>
+							<a href="#">Something else here</a>
+						</li>
+						<li class="divider">
+						</li>
+						<li>
+							<a href="#">Separated link</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="span2">
+			<div class="btn-group">
+				 <button class="btn">Schedules</button> <button data-toggle="dropdown" class="btn dropdown-toggle"><span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li>
+						<a href="#">Action</a>
+					</li>
+					<li>
+						<a href="#">Another action</a>
+					</li>
+					<li>
+						<a href="#">Something else here</a>
+					</li>
+					<li class="divider">
+					</li>
+					<li class="dropdown-submenu">
+						 <a tabindex="-1" href="#">More options</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="#">Action</a>
+							</li>
+							<li>
+								<a href="#">Another action</a>
+							</li>
+							<li>
+								<a href="#">Something else here</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+			<p>
+				<strong>Employees:</strong>
+			</p>
+			<ul>
+
+<?php
+
+	$result = mysqli_query($con, "SELECT DISTINCT name FROM schedule");
+	$names = array();
+	$j=0;
+	while($row = mysqli_fetch_array($result, MYSQL_ASSOC)){
+	   	$names[$j] = $row['name'];
+		$j++;
+	}
+
+
+	for($count=0;$count<count($names);$count++){
+		echo "<li>".$names[$count]."</li>";
+	}
+
+	$user = $_SESSION['myusername'];
+	$result = mysqli_query($con, "SELECT first_name FROM members WHERE username='$user'");
+	$name = mysqli_fetch_array($result);
+
+	$user_end = array(7);
+	for($i=0;$i<7;$i++){
+		$user_end[$i] = 0;
+		$result = mysqli_query($con, "SELECT end_time FROM schedule WHERE name='$name[0]' AND day='$i'");
+		$j = 0;
+		$temp = array();
+		while($row = mysqli_fetch_array($result, MYSQL_ASSOC)){
+			   $temp[$j] = $row['end_time'];
+			   $j++;
+		}
+		if(!empty($temp)){
+			$user_end[$i] = $temp;
+		}
+	}
+	$user_start = array(7);
+	for($i=0;$i<7;$i++){
+		$user_start[$i] = 0;
+		$result = mysqli_query($con, "SELECT start_time FROM schedule WHERE name='$name[0]' AND day='$i'");
+		$j = 0;
+		$temp = array();
+		while($row = mysqli_fetch_array($result, MYSQL_ASSOC)){
+			   $temp[$j] = $row['start_time'];
+			   $j++;
+		}
+		if(!empty($temp)){
+			$user_start[$i] = $temp;
+		}
+	}
+?>
+			</ul>
+		</div>
+		<div class="span8">
+			<h3 class="text-center">
+				Week of 11-10-13:
+			</h3>
+			<table class="table table-hover table-condensed table-bordered">
+				<thead>
+
+					<tr class="headers">
+						<th>
+							Time:
+						</th>
+						<th>
+							Sunday:
+						</th>
+						<th>
+							Monday:
+						</th>
+						<th>
+							Tuesday:
+						</th>
+						<th>
+							Wednesday:
+						</th>
+						<th>
+							Thursday:
+						</th>
+						<th>
+							Friday:
+						</th>
+						<th>
+							Saturday:
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+
+<?php
+	$next_start = array(7);
+	$next_end = array(7);
+	for($i=0;$i<7;$i++){
+		if(!empty($user_start[$i])){
+			$next_start[$i] = $user_start[$i][0];
+			$next_end[$i] = $user_end[$i][0];
+		}else{
+			$next_start[$i] = 0;
+			$next_end[$i] = 0;
+		}
+	}
+	for($row=0;$row<24;$row++){
+		echo "<tr>";
+		echo "<td class='centered-cell'>";
+		if($row < 12 && $row != 0){
+			echo "".$row."am";
+		}elseif($row == 0){
+			echo "12am";
+		}else{
+			if($row == 12){
+				echo "12pm";
+			}else{
+				echo "".($row % 12)."pm";
+			}
+		}
+
+		echo "</td>";
+
+		for($col=0;$col<7;$col++){
+			$query = "SELECT name FROM schedule WHERE day='$col' AND start_time='$row'";
+			$result = mysqli_query($con, $query);
+			$display = mysqli_fetch_array($result);
+			
+			$query = "SELECT username FROM members WHERE first_name='$display[0]'";
+			$result = mysqli_query($con, $query);
+			$scheduled_username = mysqli_fetch_array($result);
+
+			if($row >= $next_start[$col] && $row < $next_end[$col]){
+				echo "<td style='background-color:#FAFA25'>";
+			}else{
+				echo "<td>";
+			}
+			echo $display[0];
+			echo "</td>";
+
+			if($row > $next_end[$col] && !empty($user_end[$col])){
+				array_shift($user_start[$col]);
+				$next_start[$col] = $user_start[$col][0];
+				array_shift($user_end[$col]);
+				$next_end[$col] = $user_end[$col][0];
+			}
+		}
+		echo "</tr>";
+	}
+?>
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</body>
+</html>
